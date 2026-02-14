@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Path of Destiny</title>
     <style>
-        /* Global layout settings for dark theme */
+        /* Base layout settings */
         body { background: #020617; color: #f8fafc; display: flex; flex-direction: column; align-items: center; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; overflow-x: hidden; touch-action: none; }
         #main-header { margin-top: 20px; color: #38bdf8; font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; }
         #game-ui { display: flex; flex-direction: column; align-items: center; width: 100%; }
@@ -20,15 +20,27 @@
         .choice-btn { background: #1e293b; color: #f8fafc; border: 1px solid #38bdf8; padding: 14px; margin: 8px 0; cursor: pointer; border-radius: 12px; font-size: 14px; width: 100%; display: block; }
         #outcome-text { margin-top: 20px; line-height: 1.6; color: #94a3b8; font-style: italic; }
         
-        /* Final Timeline Page Styles - No Interaction */
-        #final-screen { display: none; width: 100%; background: #020617; color: white; flex-direction: column; align-items: center; padding: 50px 20px; box-sizing: border-box; }
-        .journey-container { max-width: 600px; width: 100%; }
-        .timeline-item { position: relative; padding-left: 30px; border-left: 1px solid #334155; margin-bottom: 40px; }
-        .timeline-item::before { content: ''; position: absolute; left: -5px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
-        .item-title { font-size: 1.2rem; color: #38bdf8; margin-bottom: 10px; font-weight: bold; }
-        .item-desc { color: #94a3b8; line-height: 1.7; font-size: 1rem; }
-        .final-quote-section { text-align: center; margin-top: 50px; border-top: 1px solid #1e293b; padding-top: 40px; }
-        .next-step-text { color: #38bdf8; font-size: 1.8rem; letter-spacing: 5px; margin-top: 20px; font-weight: 300; }
+        /* Final Page Styles */
+        #final-screen { display: none; width: 100%; background: #020617; color: white; flex-direction: column; align-items: center; padding: 60px 20px; box-sizing: border-box; }
+        .journey-container { max-width: 700px; width: 100%; }
+        
+        .phil-section { text-align: center; margin-bottom: 60px; }
+        .phil-text { line-height: 1.8; color: #cbd5e1; font-size: 1.1rem; margin-bottom: 30px; }
+        
+        /* Structured Timeline Items */
+        .timeline-item { position: relative; padding-left: 35px; border-left: 2px solid #38bdf8; margin-bottom: 50px; }
+        .timeline-item::before { content: ''; position: absolute; left: -9px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: #020617; border: 2px solid #38bdf8; box-shadow: 0 0 10px #38bdf8; }
+        .item-title { font-size: 1.3rem; color: #38bdf8; margin-bottom: 8px; font-weight: bold; }
+        .item-desc { color: #94a3b8; line-height: 1.7; font-size: 1.05rem; }
+
+        /* Full Timeline Visual Section */
+        .visual-timeline { margin-top: 80px; border-top: 1px solid #1e293b; padding-top: 60px; }
+        .year-tag { display: inline-block; background: #38bdf8; color: #020617; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; }
+        
+        .scholar-link { display: inline-block; margin-top: 40px; color: #38bdf8; text-decoration: none; border: 1px solid #38bdf8; padding: 12px 24px; border-radius: 30px; transition: 0.3s; }
+        .scholar-link:hover { background: #38bdf8; color: #020617; }
+
+        .next-step-text { color: #38bdf8; font-size: 2rem; letter-spacing: 6px; margin-top: 40px; font-weight: 300; }
     </style>
 </head>
 <body>
@@ -53,43 +65,78 @@
 
     <div id="final-screen">
         <div class="journey-container">
-            <h2 style="text-align:center; color:#38bdf8; font-size:2rem; margin-bottom:50px;">THE FULL JOURNEY</h2>
             
+            <div class="phil-section">
+                <h2 style="color:#38bdf8; font-size:2rem; margin-bottom:40px;">THE REVELATION</h2>
+                <div class="phil-text">
+                    Thank you for playing through these moments. The questions you answered represent the major turning points in my life. <br><br>
+                    In reality these choices often feel quiet and ordinary when we make them yet their impact on our destiny is profound. They are the silent shifts that rewrite our future. <br><br>
+                    From the ocean to the office and from biology to the abstract world of mathematics. We have moved through the physical to the logical. <br><br>
+                    But destiny is never static. What happens after the proof is written? What is the next chapter of this unfolding geometry?
+                </div>
+                <div style="font-style:italic; color:#64748b; font-size:1.1rem;">
+                    "Your journey was never a calculation but a series of courageous leaps."
+                </div>
+            </div>
+
+            <div style="height: 100px;"></div>
+
             <div class="timeline-item">
-                <div class="item-title">The Spark in High School</div>
-                <div class="item-desc">It started with a biology teacher whose passion made the world of cells and life feel like a masterpiece. You chose to dive into the organic complexity of the living world.</div>
+                <div class="item-title">The Spark (High School)</div>
+                <div class="item-desc">It began with a biology teacher whose passion made the world of cells and life feel like a masterpiece. You chose to dive into the organic complexity of the living world.</div>
             </div>
 
             <div class="timeline-item">
-                <div class="item-title">The Exploration in Undergraduate Years</div>
+                <div class="item-title">The Exploration (Undergraduate)</div>
                 <div class="item-desc">Four years of rigorous laboratory work at sea and on land. While the experiments were fascinating you felt the call for something broader than the lab bench.</div>
             </div>
 
             <div class="timeline-item">
-                <div class="item-title">The Commercial Pivot in a Seven Year Career</div>
-                <div class="item-desc">You entered the professional world and proved your resilience and versatility. Seven years of success gave you a deep understanding of the market but you eventually hit the ceiling.</div>
+                <div class="item-title">The Commercial Pivot (Seven Year Career)</div>
+                <div class="item-desc">You entered the professional world proving your resilience and versatility. Seven years of success gave you a deep understanding of the market but you eventually hit the ceiling.</div>
             </div>
 
             <div class="timeline-item">
-                <div class="item-title">The Reinvention through Statistics Masters</div>
+                <div class="item-title">The Reinvention (Statistics Masters)</div>
                 <div class="item-desc">You left your comfort zone and crossed the ocean. In the United States you traded stability for the rigorous logic of Statistics unlocking the power of data.</div>
             </div>
 
             <div class="timeline-item">
-                <div class="item-title">The Synthesis in Mathematics PhD</div>
-                <div class="item-desc">Today you combine the fragments of your past biology commerce and statistics into the deep abstraction of Mathematics. A journey from the organic to the logical.</div>
+                <div class="item-title">The Synthesis (Mathematics PhD)</div>
+                <div class="item-desc">Today you combine the fragments of your past biology commerce and statistics into the deep abstraction of <b>Mathematics</b>. A journey from the organic to the logical.</div>
             </div>
 
-            <div class="final-quote-section">
-                <p style="font-style:italic; color:#64748b;">"Your journey was never a calculation but a series of courageous leaps."</p>
-                <div class="next-step-text">WHAT'S NEXT?</div>
-                <button onclick="location.reload()" style="margin-top:50px; background:none; border:1px solid #334155; color:#64748b; padding:8px 20px; border-radius:20px; cursor:pointer;">Restart Journey</button>
+            <div class="visual-timeline">
+                <h2 style="color:#38bdf8; margin-bottom:40px;">THE FULL TIMELINE</h2>
+                
+                <div class="timeline-item">
+                    <span class="year-tag">2011 TO 2015</span>
+                    <div class="item-title">Biological Sciences</div>
+                    <div class="item-desc">Studying biology on a beautiful island surrounded by the sea. A time of natural wonder and academic foundation.</div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="year-tag">2015 TO 2022</span>
+                    <div class="item-title">Professional Career</div>
+                    <div class="item-desc">Working in the commercial world. I witnessed much but eventually encountered the career ceiling that prompted my next transformation.</div>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="year-tag">2022 TO 2027</span>
+                    <div class="item-title">Math PhD at Marquette University</div>
+                    <div class="item-desc">Pursuing a PhD in Mathematics in the United States. Transforming experience into rigorous theoretical expertise.</div>
+                </div>
+
+                <div style="text-align:center;">
+                    <a href="https://scholar.google.com/citations?user=3IDaPIMAAAAJ&hl=en" target="_blank" class="scholar-link">View My Publications</a>
+                    <div class="next-step-text">WHAT'S NEXT?</div>
+                    <button onclick="location.reload()" style="margin-top:50px; background:none; border:1px solid #334155; color:#64748b; padding:8px 20px; border-radius:20px; cursor:pointer;">Restart Journey</button>
+                </div>
             </div>
         </div>
     </div>
 
 <script>
-// Game and Logic Setup
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
@@ -100,7 +147,6 @@ let dx = 0, dy = -1;
 let score = 0;
 let gamePaused = false;
 
-// Simplified triggers to ensure you reach the end
 const plots = [
     { trigger: 1, question: "High school biology was a world of wonder. Do you follow that spark?", choices: ["Embrace Biology.", "Seek a different path."], outcome: "The fascination for life won. You embarked on a four year odyssey." },
     { trigger: 2, question: "The lab feels too small for your curiosity. Where does your drive take you?", choices: ["Stay in academia.", "Enter the Commercial world."], outcome: "You chose the market. Seven years of success proved your resilience." },
@@ -112,13 +158,10 @@ let currentPlotIdx = 0;
 
 function main() {
     if(gamePaused) return;
-    
-    // Once all 4 questions are answered, transition to the static journey page
     if (currentPlotIdx >= plots.length) {
         renderFullJourney();
         return;
     }
-    
     setTimeout(function onTick() {
         clearCanvas();
         drawFood();
@@ -170,22 +213,17 @@ function showModal(plot) {
     overlay.style.display = "flex";
 }
 
-// Logic to clear game UI and show the static Full Journey page
 function renderFullJourney() {
     document.getElementById("game-ui").style.display = "none";
     document.getElementById("main-header").style.display = "none";
-    
     const finalScreen = document.getElementById("final-screen");
     finalScreen.style.display = "flex";
-    
-    // Enable scrolling for the final narrative page
     document.body.style.overflowY = "auto";
     document.body.style.touchAction = "auto";
 }
 
 function advanceSnake() {
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-    // Screen wrap logic
     if (head.x < 0) head.x = 19;
     if (head.x > 19) head.x = 0;
     if (head.y < 0) head.y = 19;
@@ -195,13 +233,10 @@ function advanceSnake() {
         score++;
         scoreElement.innerText = score;
         createFood();
-    } else { 
-        if(dx !== 0 || dy !== 0) snake.pop(); 
-    }
+    } else { if(dx !== 0 || dy !== 0) snake.pop(); }
 }
 
 function clearCanvas() { ctx.fillStyle = "#000"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-
 function drawSnake() { 
     snake.forEach((part, index) => {
         ctx.fillStyle = index === 0 ? "#38bdf8" : "#0f172a";
@@ -210,15 +245,12 @@ function drawSnake() {
         ctx.strokeRect(part.x * 20, part.y * 20, 18, 18);
     });
 }
-
 function createFood() { 
     food = {x: Math.floor(Math.random() * 19), y: Math.floor(Math.random() * 19)};
     if (snake.some(p => p.x === food.x && p.y === food.y)) createFood();
 }
-
 function drawFood() { ctx.fillStyle = "#f43f5e"; ctx.beginPath(); ctx.arc(food.x*20+10, food.y*20+10, 8, 0, Math.PI*2); ctx.fill(); }
 
-// Navigation controls
 window.onkeydown = e => {
     if (gamePaused) return;
     if (e.keyCode === 37 && dx !== 1) { dx = -1; dy = 0; }
@@ -227,7 +259,6 @@ window.onkeydown = e => {
     if (e.keyCode === 40 && dy !== -1) { dx = 0; dy = 1; }
 };
 
-// Touch navigation for mobile
 let touchStartX = 0; let touchStartY = 0;
 document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, false);
 document.addEventListener('touchmove', e => {
