@@ -3,34 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Qishi's Path of Destiny</title>
+    <title>Path of Destiny</title>
     <style>
-        body { background: #020617; color: #f8fafc; display: flex; flex-direction: column; align-items: center; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; overflow: hidden; touch-action: none; }
-        h1 { margin-top: 20px; color: #38bdf8; font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; }
-        #game-container { position: relative; width: 100vw; height: 60vh; display: flex; justify-content: center; align-items: center; }
-        canvas { border: 1px solid #1e293b; background: #000; box-shadow: 0 0 30px rgba(56, 189, 248, 0.1); width: 360px; height: 360px; }
+        /* Base layout and dark theme */
+        body { background: #020617; color: #f8fafc; display: flex; flex-direction: column; align-items: center; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; overflow-x: hidden; touch-action: none; }
+        #main-header { margin-top: 20px; color: #38bdf8; font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; transition: opacity 0.5s; }
+        #game-container { position: relative; width: 100vw; height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        canvas { border: 1px solid #1e293b; background: #000; box-shadow: 0 0 30px rgba(56, 189, 248, 0.1); width: 320px; height: 320px; }
         #score-board { font-size: 1rem; margin: 10px; color: #64748b; }
         
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.95); justify-content: center; align-items: center; z-index: 100; padding: 20px; box-sizing: border-box; }
+        /* Choice Modal Styling */
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.98); justify-content: center; align-items: center; z-index: 100; padding: 20px; box-sizing: border-box; }
         .modal { background: #0f172a; padding: 30px; border-radius: 24px; border: 1px solid #38bdf8; max-width: 450px; width: 100%; text-align: center; }
         h3 { color: #38bdf8; line-height: 1.5; font-size: 1.2rem; margin-bottom: 20px; }
-        .choice-btn { background: #1e293b; color: #f8fafc; border: 1px solid #38bdf8; padding: 14px; margin: 8px 0; cursor: pointer; border-radius: 12px; font-size: 14px; width: 100%; display: block; transition: all 0.2s; }
-        .choice-btn:active { background: #38bdf8; color: #020617; }
-        #outcome-text { margin-top: 20px; line-height: 1.6; color: #94a3b8; font-style: italic; font-size: 0.95rem; }
+        .choice-btn { background: #1e293b; color: #f8fafc; border: 1px solid #38bdf8; padding: 14px; margin: 8px 0; cursor: pointer; border-radius: 12px; font-size: 14px; width: 100%; display: block; }
+        #outcome-text { margin-top: 20px; line-height: 1.6; color: #94a3b8; font-style: italic; }
         
-        #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; color: white; justify-content: center; align-items: center; z-index: 200; padding: 30px; text-align: center; box-sizing: border-box; }
-        .destiny-title { font-size: 1.8rem; color: #38bdf8; margin-bottom: 25px; font-weight: bold; }
-        .destiny-body { font-size: 1.1rem; line-height: 2; max-width: 550px; color: #cbd5e1; }
-        .next-step { color: #38bdf8; font-size: 1.4rem; margin-top: 30px; font-weight: 300; letter-spacing: 2px; }
+        /* Static Full Journey Page Styling */
+        #final-screen { display: none; width: 100%; background: #020617; color: white; flex-direction: column; align-items: center; padding: 50px 20px; box-sizing: border-box; overflow-y: auto; }
+        .journey-container { max-width: 600px; width: 100%; }
+        .timeline-item { position: relative; padding-left: 30px; border-left: 1px solid #334155; margin-bottom: 40px; }
+        .timeline-item::before { content: ''; position: absolute; left: -5px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
+        .item-title { font-size: 1.2rem; color: #38bdf8; margin-bottom: 10px; font-weight: bold; }
+        .item-desc { color: #94a3b8; line-height: 1.7; font-size: 1rem; }
+        .final-quote-section { text-align: center; margin-top: 50px; border-top: 1px solid #1e293b; padding-top: 40px; }
+        .next-step-text { color: #38bdf8; font-size: 1.8rem; letter-spacing: 5px; margin-top: 20px; font-weight: 300; }
     </style>
 </head>
 <body>
 
-    <h1>PATH OF DESTINY</h1>
-    <div id="score-board">Experience: <span id="score">0</span></div>
-    
-    <div id="game-container">
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <h1 id="main-header">PATH OF DESTINY</h1>
+    <div id="game-ui">
+        <div id="score-board">Experience: <span id="score">0</span></div>
+        <div id="game-container">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+        </div>
     </div>
 
     <div id="overlay">
@@ -38,20 +45,49 @@
             <h3 id="question-text"></h3>
             <div id="buttons"></div>
             <p id="outcome-text"></p>
-            <button id="continue-btn" style="display:none; background:#38bdf8; color:#020617; border:none; padding:12px 40px; border-radius:30px; cursor:pointer; margin-top:20px; font-weight:bold; width:100%;">Step into the Next Phase</button>
+            <button id="continue-btn" style="display:none; background:#38bdf8; color:#020617; border:none; padding:12px 40px; border-radius:30px; cursor:pointer; margin-top:20px; font-weight:bold; width:100%;">Continue the Path</button>
         </div>
     </div>
 
     <div id="final-screen">
-        <div>
-            <div class="destiny-title">THE CONFLUENCE</div>
-            <div class="destiny-body" id="final-text"></div>
-            <div class="next-step">WHAT'S NEXT?</div>
-            <button onclick="location.reload()" style="margin-top:50px; background:none; border:1px solid #334155; color:#64748b; padding:8px 20px; border-radius:20px; cursor:pointer;">Restart Journey</button>
+        <div class="journey-container">
+            <h2 style="text-align:center; color:#38bdf8; font-size:2rem; margin-bottom:50px;">THE FULL JOURNEY</h2>
+            
+            <div class="timeline-item">
+                <div class="item-title">The Spark in High School</div>
+                <div class="item-desc">It started with a biology teacher whose passion made the world of cells and life feel like a masterpiece. You chose to dive into the organic complexity of the living world.</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="item-title">The Exploration in Undergraduate Years</div>
+                <div class="item-desc">Four years of rigorous laboratory work at sea and on land. While the experiments were fascinating you felt the call for something broader than the lab bench.</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="item-title">The Commercial Pivot in a Seven Year Career</div>
+                <div class="item-desc">You entered the professional world and proved your resilience and versatility. Seven years of success gave you a deep understanding of the market but you eventually hit the ceiling.</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="item-title">The Reinvention through Statistics Masters</div>
+                <div class="item-desc">You left your comfort zone and crossed the ocean. In the United States you traded stability for the rigorous logic of Statistics unlocking the power of data.</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="item-title">The Synthesis in Mathematics PhD</div>
+                <div class="item-desc">Today you combine the fragments of your past biology commerce and statistics into the deep abstraction of Mathematics. A journey from the organic to the logical.</div>
+            </div>
+
+            <div class="final-quote-section">
+                <p style="font-style:italic; color:#64748b;">"Your journey was never a calculation but a series of courageous leaps."</p>
+                <div class="next-step-text">WHAT'S NEXT?</div>
+                <button onclick="location.reload()" style="margin-top:50px; background:none; border:1px solid #334155; color:#64748b; padding:8px 20px; border-radius:20px; cursor:pointer;">Restart Journey</button>
+            </div>
         </div>
     </div>
 
 <script>
+// Canvas and Game Logic
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
@@ -62,41 +98,25 @@ let dx = 0, dy = -1;
 let score = 0;
 let gamePaused = false;
 
+// Question nodes
 const plots = [
-    {
-        trigger: 1,
-        question: "High school biology was a world of wonder. Do you follow that initial spark?",
-        choices: ["Embrace Biology.", "Seek a different path."],
-        outcome: "The fascination for life won. You embarked on a four-year odyssey through laboratories and oceans."
-    },
-    {
-        trigger: 3,
-        question: "The lab feels too small for your curiosity. Where does your drive take you?",
-        choices: ["Stay in the lab.", "Enter the Commercial world."],
-        outcome: "You chose the vastness of the market. Seven years of professional success proved your resilience."
-    },
-    {
-        trigger: 6,
-        question: "The 'ceiling' appears. A Master's in the US is a leap into the unknown. Are you ready?",
-        choices: ["Maintain stability.", "Cross the ocean."],
-        outcome: "You sacrificed comfort for growth. A new continent, a new language—the language of data."
-    },
-    {
-        trigger: 9,
-        question: "Internship ends. A mentor offers a PhD in Mathematics. Do you choose the hardest path?",
-        choices: ["Find a job.", "Embrace the rigor of Math."],
-        outcome: "From the organic complexity of Biology to the pure logic of Mathematics. You've come full circle."
-    }
+    { trigger: 1, question: "High school biology was a world of wonder. Do you follow that spark?", choices: ["Embrace Biology.", "Seek a different path."], outcome: "The fascination for life won. You embarked on a four year odyssey." },
+    { trigger: 3, question: "The lab feels too small for your curiosity. Where does your drive take you?", choices: ["Stay in academia.", "Enter the Commercial world."], outcome: "You chose the market. Seven years of success proved your resilience." },
+    { trigger: 6, question: "The ceiling appears. A Masters in the US is a leap into the unknown. Ready?", choices: ["Maintain stability.", "Cross the ocean."], outcome: "You sacrificed comfort for growth. A new continent and a new language of data." },
+    { trigger: 9, question: "Internship ends. A mentor offers a PhD in Mathematics. The hardest path?", choices: ["Find a job.", "Embrace Math."], outcome: "From organic complexity to pure logic. You have come full circle." }
 ];
 
 let currentPlotIdx = 0;
 
 function main() {
     if(gamePaused) return;
+    
+    // Check if journey is complete
     if (currentPlotIdx >= plots.length && score >= 12) {
-        showFinalEnding();
+        renderFullJourney();
         return;
     }
+    
     setTimeout(function onTick() {
         clearCanvas();
         drawFood();
@@ -104,7 +124,7 @@ function main() {
         drawSnake();
         checkPlot();
         main();
-    }, 200); 
+    }, 180); 
 }
 
 function checkPlot() {
@@ -148,15 +168,19 @@ function showModal(plot) {
     overlay.style.display = "flex";
 }
 
-function showFinalEnding() {
+// Function to remove game and show static timeline
+function renderFullJourney() {
+    // Hide game UI
+    document.getElementById("game-ui").style.display = "none";
+    document.getElementById("main-header").style.display = "none";
+    
+    // Show static journey page
     const finalScreen = document.getElementById("final-screen");
-    const finalText = document.getElementById("final-text");
     finalScreen.style.display = "flex";
-    finalText.innerHTML = `
-        <p>Your journey was never a calculation, but a series of courageous leaps.</p>
-        <p>From the sunlight in a biology classroom to the deep abstraction of a <b>Mathematics PhD</b>.</p>
-        <p>You have gathered the fragments of your past—biology, commerce, and statistics—into a singular, powerful direction.</p>
-    `;
+    
+    // Re-enable scrolling for the static page
+    document.body.style.overflowY = "auto";
+    document.body.style.touchAction = "auto";
 }
 
 function advanceSnake() {
@@ -176,6 +200,7 @@ function advanceSnake() {
 }
 
 function clearCanvas() { ctx.fillStyle = "#000"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+
 function drawSnake() { 
     snake.forEach((part, index) => {
         ctx.fillStyle = index === 0 ? "#38bdf8" : "#0f172a";
@@ -184,12 +209,15 @@ function drawSnake() {
         ctx.strokeRect(part.x * 20, part.y * 20, 18, 18);
     });
 }
+
 function createFood() { 
     food = {x: Math.floor(Math.random() * 19), y: Math.floor(Math.random() * 19)};
     if (snake.some(p => p.x === food.x && p.y === food.y)) createFood();
 }
+
 function drawFood() { ctx.fillStyle = "#f43f5e"; ctx.beginPath(); ctx.arc(food.x*20+10, food.y*20+10, 8, 0, Math.PI*2); ctx.fill(); }
 
+// Controls
 window.onkeydown = e => {
     if (gamePaused) return;
     if (e.keyCode === 37 && dx !== 1) { dx = -1; dy = 0; }
