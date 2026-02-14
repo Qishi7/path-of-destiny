@@ -48,7 +48,7 @@
     <h1 id="main-header">PATH OF DESTINY</h1>
     
     <div id="game-ui">
-        <div id="score-board">Experience Gathered: <span id="score">0</span></div>
+        <div id="score-board">Experience: <span id="score">0</span></div>
         <div id="game-container">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
         </div>
@@ -59,7 +59,7 @@
             <h3 id="question-text"></h3>
             <div id="buttons"></div>
             <p id="outcome-text"></p>
-            <button id="continue-btn" style="display:none; background:#38bdf8; color:#020617; border:none; padding:12px 40px; border-radius:30px; cursor:pointer; margin-top:20px; font-weight:bold; width:100%;">Continue the Path</button>
+            <button id="continue-btn" style="display:none; background:#38bdf8; color:#020617; border:none; padding:12px 40px; border-radius:30px; cursor:pointer; margin-top:20px; font-weight:bold; width:100%;">Continue the Journey</button>
         </div>
     </div>
 
@@ -79,11 +79,9 @@
                 </div>
             </div>
 
-            <div style="height: 100px;"></div>
-
             <div class="timeline-item">
                 <div class="item-title">The Spark (High School)</div>
-                <div class="item-desc">It began with a biology teacher whose passion made the world of cells and life feel like a masterpiece. You chose to dive into the organic complexity of the living world.</div>
+                <div class="item-desc">It started with a biology teacher whose passion made the world of cells and life feel like a masterpiece. You chose to dive into the organic complexity of the living world.</div>
             </div>
 
             <div class="timeline-item">
@@ -137,6 +135,7 @@
     </div>
 
 <script>
+// Game and Logic Setup
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
@@ -147,6 +146,7 @@ let dx = 0, dy = -1;
 let score = 0;
 let gamePaused = false;
 
+// Sequential triggers
 const plots = [
     { trigger: 1, question: "High school biology was a world of wonder. Do you follow that spark?", choices: ["Embrace Biology.", "Seek a different path."], outcome: "The fascination for life won. You embarked on a four year odyssey." },
     { trigger: 2, question: "The lab feels too small for your curiosity. Where does your drive take you?", choices: ["Stay in academia.", "Enter the Commercial world."], outcome: "You chose the market. Seven years of success proved your resilience." },
@@ -158,10 +158,13 @@ let currentPlotIdx = 0;
 
 function main() {
     if(gamePaused) return;
+    
+    // Switch to Full Journey only after answering all questions
     if (currentPlotIdx >= plots.length) {
         renderFullJourney();
         return;
     }
+    
     setTimeout(function onTick() {
         clearCanvas();
         drawFood();
@@ -251,6 +254,7 @@ function createFood() {
 }
 function drawFood() { ctx.fillStyle = "#f43f5e"; ctx.beginPath(); ctx.arc(food.x*20+10, food.y*20+10, 8, 0, Math.PI*2); ctx.fill(); }
 
+// Key Navigation
 window.onkeydown = e => {
     if (gamePaused) return;
     if (e.keyCode === 37 && dx !== 1) { dx = -1; dy = 0; }
@@ -259,6 +263,7 @@ window.onkeydown = e => {
     if (e.keyCode === 40 && dy !== -1) { dx = 0; dy = 1; }
 };
 
+// Touch Navigation
 let touchStartX = 0; let touchStartY = 0;
 document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, false);
 document.addEventListener('touchmove', e => {
