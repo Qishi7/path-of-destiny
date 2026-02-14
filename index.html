@@ -5,22 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Path of Destiny</title>
     <style>
-        /* Base layout and dark theme */
+        /* Global layout settings for dark theme */
         body { background: #020617; color: #f8fafc; display: flex; flex-direction: column; align-items: center; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; overflow-x: hidden; touch-action: none; }
-        #main-header { margin-top: 20px; color: #38bdf8; font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; transition: opacity 0.5s; }
-        #game-container { position: relative; width: 100vw; height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #main-header { margin-top: 20px; color: #38bdf8; font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; }
+        #game-ui { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        #game-container { position: relative; width: 100vw; height: 50vh; display: flex; justify-content: center; align-items: center; }
         canvas { border: 1px solid #1e293b; background: #000; box-shadow: 0 0 30px rgba(56, 189, 248, 0.1); width: 320px; height: 320px; }
         #score-board { font-size: 1rem; margin: 10px; color: #64748b; }
         
-        /* Choice Modal Styling */
+        /* Decision Modal Styles */
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.98); justify-content: center; align-items: center; z-index: 100; padding: 20px; box-sizing: border-box; }
         .modal { background: #0f172a; padding: 30px; border-radius: 24px; border: 1px solid #38bdf8; max-width: 450px; width: 100%; text-align: center; }
         h3 { color: #38bdf8; line-height: 1.5; font-size: 1.2rem; margin-bottom: 20px; }
         .choice-btn { background: #1e293b; color: #f8fafc; border: 1px solid #38bdf8; padding: 14px; margin: 8px 0; cursor: pointer; border-radius: 12px; font-size: 14px; width: 100%; display: block; }
         #outcome-text { margin-top: 20px; line-height: 1.6; color: #94a3b8; font-style: italic; }
         
-        /* Static Full Journey Page Styling */
-        #final-screen { display: none; width: 100%; background: #020617; color: white; flex-direction: column; align-items: center; padding: 50px 20px; box-sizing: border-box; overflow-y: auto; }
+        /* Final Timeline Page Styles - No Interaction */
+        #final-screen { display: none; width: 100%; background: #020617; color: white; flex-direction: column; align-items: center; padding: 50px 20px; box-sizing: border-box; }
         .journey-container { max-width: 600px; width: 100%; }
         .timeline-item { position: relative; padding-left: 30px; border-left: 1px solid #334155; margin-bottom: 40px; }
         .timeline-item::before { content: ''; position: absolute; left: -5px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
@@ -33,8 +34,9 @@
 <body>
 
     <h1 id="main-header">PATH OF DESTINY</h1>
+    
     <div id="game-ui">
-        <div id="score-board">Experience: <span id="score">0</span></div>
+        <div id="score-board">Experience Gathered: <span id="score">0</span></div>
         <div id="game-container">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
         </div>
@@ -87,7 +89,7 @@
     </div>
 
 <script>
-// Canvas and Game Logic
+// Game and Logic Setup
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
@@ -98,12 +100,12 @@ let dx = 0, dy = -1;
 let score = 0;
 let gamePaused = false;
 
-// Question nodes
+// Simplified triggers to ensure you reach the end
 const plots = [
     { trigger: 1, question: "High school biology was a world of wonder. Do you follow that spark?", choices: ["Embrace Biology.", "Seek a different path."], outcome: "The fascination for life won. You embarked on a four year odyssey." },
-    { trigger: 3, question: "The lab feels too small for your curiosity. Where does your drive take you?", choices: ["Stay in academia.", "Enter the Commercial world."], outcome: "You chose the market. Seven years of success proved your resilience." },
-    { trigger: 6, question: "The ceiling appears. A Masters in the US is a leap into the unknown. Ready?", choices: ["Maintain stability.", "Cross the ocean."], outcome: "You sacrificed comfort for growth. A new continent and a new language of data." },
-    { trigger: 9, question: "Internship ends. A mentor offers a PhD in Mathematics. The hardest path?", choices: ["Find a job.", "Embrace Math."], outcome: "From organic complexity to pure logic. You have come full circle." }
+    { trigger: 2, question: "The lab feels too small for your curiosity. Where does your drive take you?", choices: ["Stay in academia.", "Enter the Commercial world."], outcome: "You chose the market. Seven years of success proved your resilience." },
+    { trigger: 3, question: "The ceiling appears. A Masters in the US is a leap into the unknown. Ready?", choices: ["Maintain stability.", "Cross the ocean."], outcome: "You sacrificed comfort for growth. A new continent and a new language of data." },
+    { trigger: 4, question: "Internship ends. A mentor offers a PhD in Mathematics. The hardest path?", choices: ["Find a job.", "Embrace Math."], outcome: "From organic complexity to pure logic. You have come full circle." }
 ];
 
 let currentPlotIdx = 0;
@@ -111,8 +113,8 @@ let currentPlotIdx = 0;
 function main() {
     if(gamePaused) return;
     
-    // Check if journey is complete
-    if (currentPlotIdx >= plots.length && score >= 12) {
+    // Once all 4 questions are answered, transition to the static journey page
+    if (currentPlotIdx >= plots.length) {
         renderFullJourney();
         return;
     }
@@ -168,23 +170,22 @@ function showModal(plot) {
     overlay.style.display = "flex";
 }
 
-// Function to remove game and show static timeline
+// Logic to clear game UI and show the static Full Journey page
 function renderFullJourney() {
-    // Hide game UI
     document.getElementById("game-ui").style.display = "none";
     document.getElementById("main-header").style.display = "none";
     
-    // Show static journey page
     const finalScreen = document.getElementById("final-screen");
     finalScreen.style.display = "flex";
     
-    // Re-enable scrolling for the static page
+    // Enable scrolling for the final narrative page
     document.body.style.overflowY = "auto";
     document.body.style.touchAction = "auto";
 }
 
 function advanceSnake() {
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+    // Screen wrap logic
     if (head.x < 0) head.x = 19;
     if (head.x > 19) head.x = 0;
     if (head.y < 0) head.y = 19;
@@ -217,7 +218,7 @@ function createFood() {
 
 function drawFood() { ctx.fillStyle = "#f43f5e"; ctx.beginPath(); ctx.arc(food.x*20+10, food.y*20+10, 8, 0, Math.PI*2); ctx.fill(); }
 
-// Controls
+// Navigation controls
 window.onkeydown = e => {
     if (gamePaused) return;
     if (e.keyCode === 37 && dx !== 1) { dx = -1; dy = 0; }
@@ -226,6 +227,7 @@ window.onkeydown = e => {
     if (e.keyCode === 40 && dy !== -1) { dx = 0; dy = 1; }
 };
 
+// Touch navigation for mobile
 let touchStartX = 0; let touchStartY = 0;
 document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, false);
 document.addEventListener('touchmove', e => {
