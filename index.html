@@ -7,7 +7,14 @@
     <style>
         body { background: #020617; color: #f8fafc; display: flex; flex-direction: column; align-items: center; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; overflow-x: hidden; touch-action: none; }
         #main-header { margin-top: 20px; color: #38bdf8; font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; }
-        #game-ui { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        
+        /* Introduction Screen */
+        #intro-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 300; text-align: center; padding: 20px; box-sizing: border-box; }
+        #intro-screen h2 { color: #38bdf8; font-size: 2rem; margin-bottom: 20px; }
+        #intro-screen p { max-width: 500px; line-height: 1.8; color: #cbd5e1; margin-bottom: 40px; }
+        #start-btn { background: #38bdf8; color: #020617; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+
+        #game-ui { display: none; flex-direction: column; align-items: center; width: 100%; }
         #game-container { position: relative; width: 100vw; height: 50vh; display: flex; justify-content: center; align-items: center; }
         canvas { border: 1px solid #1e293b; background: #000; box-shadow: 0 0 30px rgba(56, 189, 248, 0.1); width: 320px; height: 320px; }
         #score-board { font-size: 1rem; margin: 10px; color: #64748b; }
@@ -20,24 +27,30 @@
         
         #final-screen { display: none; width: 100%; background: #020617; color: white; flex-direction: column; align-items: center; padding: 60px 20px; box-sizing: border-box; }
         .journey-container { max-width: 700px; width: 100%; }
-        
         .phil-section { text-align: center; margin-bottom: 80px; }
         .phil-text { line-height: 2; color: #cbd5e1; font-size: 1.1rem; margin-bottom: 30px; text-align: justify; }
-        
         .timeline-item { position: relative; padding-left: 35px; border-left: 2px solid #38bdf8; margin-bottom: 60px; }
         .timeline-item::before { content: ''; position: absolute; left: -9px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: #020617; border: 2px solid #38bdf8; box-shadow: 0 0 10px #38bdf8; }
         .item-title { font-size: 1.3rem; color: #38bdf8; margin-bottom: 5px; font-weight: bold; }
         .item-location { font-size: 0.9rem; color: #64748b; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
         .item-desc { color: #94a3b8; line-height: 1.7; font-size: 1.05rem; }
-
         .year-tag { display: inline-block; background: #38bdf8; color: #020617; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; font-size: 0.85rem; }
-        
         .scholar-link { display: inline-block; margin-top: 40px; color: #38bdf8; text-decoration: none; border: 1px solid #38bdf8; padding: 12px 24px; border-radius: 30px; transition: 0.3s; }
         .scholar-link:hover { background: #38bdf8; color: #020617; }
         .next-step-text { color: #38bdf8; font-size: 2rem; letter-spacing: 6px; margin-top: 60px; font-weight: 300; }
     </style>
 </head>
 <body>
+
+    <div id="intro-screen">
+        <h2>Snake of Destiny</h2>
+        <p>
+            Welcome! This is an interactive experience of my journey. <br><br>
+            As you navigate through the game, you will encounter four pivotal questions. These represent the major crossroads I faced in my life. <br><br>
+            Through your choices, you will get to know the reasoning behind my path from Biology to Mathematics.
+        </p>
+        <button id="start-btn" onclick="startGame()">Start the Journey</button>
+    </div>
 
     <h1 id="main-header">PATH OF DESTINY</h1>
     
@@ -59,7 +72,6 @@
 
     <div id="final-screen">
         <div class="journey-container">
-            
             <div class="phil-section">
                 <h2 style="color:#38bdf8; font-size:2.2rem; margin-bottom:40px; letter-spacing: 4px;">THE REVELATION</h2>
                 <div class="phil-text">
@@ -92,7 +104,7 @@
             <div class="timeline-item">
                 <span class="year-tag">2022 TO 2027</span>
                 <div class="item-title">Math PhD Candidate</div>
-                <div class="item-location">Marquette University WI USA</div>
+                <div class="item-location">Marquette University Milwaukee WI USA</div>
                 <div class="item-desc">Pursuing a PhD in Mathematics. Transforming years of diverse experience into rigorous theoretical expertise.</div>
             </div>
 
@@ -113,16 +125,48 @@ let snake = [{x: 10, y: 10}, {x: 10, y: 11}, {x: 10, y: 12}];
 let food = {x: 5, y: 5};
 let dx = 0, dy = -1;
 let score = 0;
-let gamePaused = false;
+let gamePaused = true; // Paused until intro is closed
 
+// --- REVISED NARRATIVE WITH FATE CORRECTION ---
 const plots = [
-    { trigger: 1, question: "High school biology was a world of wonder. Do you follow that spark?", choices: ["Embrace Biology.", "Seek a different path."], outcome: "The fascination for life won. You embarked on a four year odyssey." },
-    { trigger: 2, question: "The lab feels too small for your curiosity. Where does your drive take you?", choices: ["Stay in academia.", "Enter the Commercial world."], outcome: "You chose the market. Seven years of success proved your resilience." },
-    { trigger: 3, question: "The ceiling appears. A Masters in the US is a leap into the unknown. Ready?", choices: ["Maintain stability.", "Cross the ocean."], outcome: "You sacrificed comfort for growth. A new continent and a new language of data." },
-    { trigger: 4, question: "Internship ends. A mentor offers a PhD in Mathematics. The hardest path?", choices: ["Find a job.", "Embrace Math."], outcome: "From organic complexity to pure logic. You have come full circle." }
+    { 
+        trigger: 1, 
+        question: "Your high school biology teacher is so beautiful and her classes are fascinating. Do you follow that spark?", 
+        correctChoice: "Embrace Biology.",
+        outcome: "Inspired by that spark, you chose Biology. It was the beginning of an odyssey exploring the building blocks of life.",
+        rejection: "But the biology teacher was really beautiful haha! So I actually chose Biology and spent four years on a beautiful island studying life."
+    },
+    { 
+        trigger: 2, 
+        question: "After graduation, you realize the lab life isn't your ultimate dream. Do you seek new possibilities in the commercial world?", 
+        correctChoice: "Go Commercial.",
+        outcome: "You stepped into the commercial world. For 7 years, you proved your resilience and built a versatile career.",
+        rejection: "Actually, I wanted to see more of the world! I chose the commercial world to break the laboratory bubble."
+    },
+    { 
+        trigger: 3, 
+        question: "Facing a career ceiling, an opportunity arises: A Statistics Master's in the USA. Do you take the leap?", 
+        correctChoice: "Head to the USA.",
+        outcome: "You chose growth over comfort. Trading stability for the logic of Statistics in the US was the ultimate pivot.",
+        rejection: "I couldn't stay where the ceiling was visible. I decided to cross the ocean to reinvent myself through data."
+    },
+    { 
+        trigger: 4, 
+        question: "Your mentor invites you to join his research for a PhD in Mathematics. Do you accept the challenge?", 
+        correctChoice: "Accept the PhD.",
+        outcome: "You embraced the highest intellectual rigor. From organic biology to pure mathematics, you found your true direction.",
+        rejection: "No, a stable job wasn't enough. I chose to face the challenge of a Math PhD to turn experience into expertise."
+    }
 ];
 
 let currentPlotIdx = 0;
+
+function startGame() {
+    document.getElementById("intro-screen").style.display = "none";
+    document.getElementById("game-ui").style.display = "flex";
+    gamePaused = false;
+    main();
+}
 
 function main() {
     if(gamePaused) return;
@@ -160,18 +204,20 @@ function showModal(plot) {
     btnContainer.innerHTML = "";
     btnContainer.style.display = "block";
 
-    plot.choices.forEach(choice => {
+    const choices = [plot.correctChoice, "Choose a different path"];
+
+    choices.forEach(choice => {
         const btn = document.createElement("button");
         btn.className = "choice-btn";
         btn.innerText = choice;
         btn.onclick = () => {
             btnContainer.style.display = "none";
-            outcomeText.innerText = plot.outcome;
+            // If user selects something else, show the witty rejection
+            outcomeText.innerText = (choice === plot.correctChoice) ? plot.outcome : plot.rejection;
             continueBtn.style.display = "block";
             continueBtn.onclick = () => {
                 overlay.style.display = "none";
                 currentPlotIdx++;
-                // Do not increment score here to force next food catch
                 gamePaused = false;
                 main();
             };
@@ -243,7 +289,6 @@ document.addEventListener('touchmove', e => {
 }, false);
 
 createFood();
-main();
 </script>
 </body>
 </html>
