@@ -5,30 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Qishi's Path of Destiny</title>
     <style>
-        body { background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; overflow: hidden; touch-action: none; }
-        h1 { margin-top: 20px; color: #38bdf8; font-weight: 300; letter-spacing: 2px; }
-        #game-container { position: relative; width: 100vw; height: 70vh; display: flex; justify-content: center; }
-        canvas { border: 1px solid #334155; background: #020617; box-shadow: 0 0 20px rgba(0,0,0,0.5); max-width: 95%; max-height: 100%; }
-        #score-board { font-size: 1.2rem; margin: 10px; color: #94a3b8; }
+        body { background: #020617; color: #f8fafc; display: flex; flex-direction: column; align-items: center; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; overflow: hidden; touch-action: none; }
+        h1 { margin-top: 20px; color: #38bdf8; font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; }
+        #game-container { position: relative; width: 100vw; height: 60vh; display: flex; justify-content: center; align-items: center; }
+        canvas { border: 1px solid #1e293b; background: #000; box-shadow: 0 0 30px rgba(56, 189, 248, 0.1); width: 360px; height: 360px; }
+        #score-board { font-size: 1rem; margin: 10px; color: #64748b; }
         
-        /* Modal Styling */
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.9); justify-content: center; align-items: center; z-index: 100; padding: 20px; box-sizing: border-box; }
-        .modal { background: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #38bdf8; max-width: 500px; width: 100%; box-shadow: 0 0 30px rgba(56, 189, 248, 0.2); text-align: center; }
-        h3 { color: #38bdf8; line-height: 1.4; }
-        .choice-btn { background: transparent; color: #f8fafc; border: 1px solid #38bdf8; padding: 12px 24px; margin: 10px; cursor: pointer; border-radius: 30px; font-size: 14px; transition: all 0.3s; width: 80%; }
-        .choice-btn:hover { background: #38bdf8; color: #0f172a; }
-        #outcome-text { margin-top: 20px; line-height: 1.6; color: #cbd5e1; font-style: italic; min-height: 50px; }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.95); justify-content: center; align-items: center; z-index: 100; padding: 20px; box-sizing: border-box; }
+        .modal { background: #0f172a; padding: 30px; border-radius: 24px; border: 1px solid #38bdf8; max-width: 450px; width: 100%; text-align: center; }
+        h3 { color: #38bdf8; line-height: 1.5; font-size: 1.2rem; margin-bottom: 20px; }
+        .choice-btn { background: #1e293b; color: #f8fafc; border: 1px solid #38bdf8; padding: 14px; margin: 8px 0; cursor: pointer; border-radius: 12px; font-size: 14px; width: 100%; display: block; transition: all 0.2s; }
+        .choice-btn:active { background: #38bdf8; color: #020617; }
+        #outcome-text { margin-top: 20px; line-height: 1.6; color: #94a3b8; font-style: italic; font-size: 0.95rem; }
         
-        /* Final Screen */
-        #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; color: white; justify-content: center; align-items: center; z-index: 200; padding: 40px; text-align: center; }
-        .destiny-title { font-size: 2rem; color: #38bdf8; margin-bottom: 20px; }
-        .destiny-body { font-size: 1.1rem; line-height: 1.8; max-width: 600px; color: #94a3b8; }
+        #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; color: white; justify-content: center; align-items: center; z-index: 200; padding: 30px; text-align: center; box-sizing: border-box; }
+        .destiny-title { font-size: 1.8rem; color: #38bdf8; margin-bottom: 25px; font-weight: bold; }
+        .destiny-body { font-size: 1.1rem; line-height: 2; max-width: 550px; color: #cbd5e1; }
+        .next-step { color: #38bdf8; font-size: 1.4rem; margin-top: 30px; font-weight: 300; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
     <h1>PATH OF DESTINY</h1>
-    <div id="score-board">Experience Gathered: <span id="score">0</span></div>
+    <div id="score-board">Experience: <span id="score">0</span></div>
     
     <div id="game-container">
         <canvas id="gameCanvas" width="400" height="400"></canvas>
@@ -39,14 +38,16 @@
             <h3 id="question-text"></h3>
             <div id="buttons"></div>
             <p id="outcome-text"></p>
-            <button id="continue-btn" style="display:none; background:#38bdf8; color:#020617; border:none; padding:10px 30px; border-radius:30px; cursor:pointer; margin-top:20px; font-weight:bold;">Embrace Destiny</button>
+            <button id="continue-btn" style="display:none; background:#38bdf8; color:#020617; border:none; padding:12px 40px; border-radius:30px; cursor:pointer; margin-top:20px; font-weight:bold; width:100%;">Step into the Next Phase</button>
         </div>
     </div>
 
     <div id="final-screen">
         <div>
-            <div class="destiny-title">THE FINAL REVELATION</div>
+            <div class="destiny-title">THE CONFLUENCE</div>
             <div class="destiny-body" id="final-text"></div>
+            <div class="next-step">WHAT'S NEXT?</div>
+            <button onclick="location.reload()" style="margin-top:50px; background:none; border:1px solid #334155; color:#64748b; padding:8px 20px; border-radius:20px; cursor:pointer;">Restart Journey</button>
         </div>
     </div>
 
@@ -55,37 +56,36 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
 
-let snake = [{x: 10, y: 10}];
+let snake = [{x: 10, y: 10}, {x: 10, y: 11}, {x: 10, y: 12}];
 let food = {x: 5, y: 5};
-let dx = 0, dy = 0;
+let dx = 0, dy = -1;
 let score = 0;
 let gamePaused = false;
 
-// --- YOUR CORE NARRATIVE ---
 const plots = [
     {
-        trigger: 2,
-        question: "Your high school biology teacher is so beautiful and her classes are fascinating. Do you choose Biology as your major?",
-        choices: ["Yes! It's my calling.", "No, I'll choose something else."],
-        outcome: "Drawn by inspiration, you chose Biology. You spent years exploring the building blocks of life."
+        trigger: 1,
+        question: "High school biology was a world of wonder. Do you follow that initial spark?",
+        choices: ["Embrace Biology.", "Seek a different path."],
+        outcome: "The fascination for life won. You embarked on a four-year odyssey through laboratories and oceans."
     },
     {
-        trigger: 5,
-        question: "Four years in labs, both at sea and on land. The experiments were fun, but the lab life isn't where your heart is. What's next?",
-        choices: ["Stay in Biology.", "Go Commercial & seek new possibilities."],
-        outcome: "You stepped into the commercial world. For 7 years, you thrived and gained a broader vision of the world."
+        trigger: 3,
+        question: "The lab feels too small for your curiosity. Where does your drive take you?",
+        choices: ["Stay in the lab.", "Enter the Commercial world."],
+        outcome: "You chose the vastness of the market. Seven years of professional success proved your resilience."
     },
     {
-        trigger: 10,
-        question: "You've achieved success, but you hit a 'ceiling'. An opportunity arises: A Statistics Master's in the USA. What do you do?",
-        choices: ["Stay in your comfort zone.", "Head to the US for a Master's."],
-        outcome: "You chose the unknown. You moved to the US, trading certainty for the infinite power of Statistics."
+        trigger: 6,
+        question: "The 'ceiling' appears. A Master's in the US is a leap into the unknown. Are you ready?",
+        choices: ["Maintain stability.", "Cross the ocean."],
+        outcome: "You sacrificed comfort for growth. A new continent, a new language—the language of data."
     },
     {
-        trigger: 15,
-        question: "A year into your Master's, you finish a Data Science internship with no return offer. Your mentor invites you to research and pursue a PhD in Mathematics. Your choice?",
-        choices: ["Keep looking for a job.", "Pivot to a Math PhD."],
-        outcome: "You chose the path of the scholar. You embraced the rigor of Mathematics to solve the world's spatial mysteries."
+        trigger: 9,
+        question: "Internship ends. A mentor offers a PhD in Mathematics. Do you choose the hardest path?",
+        choices: ["Find a job.", "Embrace the rigor of Math."],
+        outcome: "From the organic complexity of Biology to the pure logic of Mathematics. You've come full circle."
     }
 ];
 
@@ -93,11 +93,10 @@ let currentPlotIdx = 0;
 
 function main() {
     if(gamePaused) return;
-    if (didGameEnd()) {
+    if (currentPlotIdx >= plots.length && score >= 12) {
         showFinalEnding();
         return;
     }
-
     setTimeout(function onTick() {
         clearCanvas();
         drawFood();
@@ -105,7 +104,7 @@ function main() {
         drawSnake();
         checkPlot();
         main();
-    }, 120);
+    }, 200); 
 }
 
 function checkPlot() {
@@ -135,10 +134,11 @@ function showModal(plot) {
         btn.onclick = () => {
             btnContainer.style.display = "none";
             outcomeText.innerText = plot.outcome;
-            continueBtn.style.display = "inline-block";
+            continueBtn.style.display = "block";
             continueBtn.onclick = () => {
                 overlay.style.display = "none";
                 currentPlotIdx++;
+                score++;
                 gamePaused = false;
                 main();
             };
@@ -153,55 +153,63 @@ function showFinalEnding() {
     const finalText = document.getElementById("final-text");
     finalScreen.style.display = "flex";
     finalText.innerHTML = `
-        <p>From the sunlight in a high school biology classroom to the rigorous logic of a Mathematics PhD...</p>
-        <p>Your journey was never a straight line, but every turn was necessary. You didn't just follow a path; you calculated your own destiny.</p>
-        <p><b>Today, you stand at the intersection of Spatial Data, Statistics, and Research.</b></p>
-        <p style="color: #38bdf8; margin-top:30px;">This is the Destiny of Qishi.</p>
+        <p>Your journey was never a calculation, but a series of courageous leaps.</p>
+        <p>From the sunlight in a biology classroom to the deep abstraction of a <b>Mathematics PhD</b>.</p>
+        <p>You have gathered the fragments of your past—biology, commerce, and statistics—into a singular, powerful direction.</p>
     `;
 }
 
-// --- SNAKE ENGINE ---
-function clearCanvas() { ctx.fillStyle = "#020617"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-function drawSnake() { 
-    snake.forEach((part, index) => {
-        ctx.fillStyle = index === 0 ? "#38bdf8" : "#1e293b";
-        ctx.strokeStyle = "#0f172a";
-        ctx.fillRect(part.x * 20, part.y * 20, 18, 18);
-        ctx.strokeRect(part.x * 20, part.y * 20, 18, 18);
-    });
-}
 function advanceSnake() {
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+    if (head.x < 0) head.x = 19;
+    if (head.x > 19) head.x = 0;
+    if (head.y < 0) head.y = 19;
+    if (head.y > 19) head.y = 0;
     snake.unshift(head);
     if (head.x === food.x && head.y === food.y) {
         score++;
         scoreElement.innerText = score;
         createFood();
-    } else { if(dx!==0 || dy!==0) snake.pop(); }
+    } else { 
+        if(dx !== 0 || dy !== 0) snake.pop(); 
+    }
 }
-function createFood() { food = {x: Math.floor(Math.random() * 19), y: Math.floor(Math.random() * 19)}; }
+
+function clearCanvas() { ctx.fillStyle = "#000"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+function drawSnake() { 
+    snake.forEach((part, index) => {
+        ctx.fillStyle = index === 0 ? "#38bdf8" : "#0f172a";
+        ctx.strokeStyle = "#1e293b";
+        ctx.fillRect(part.x * 20, part.y * 20, 18, 18);
+        ctx.strokeRect(part.x * 20, part.y * 20, 18, 18);
+    });
+}
+function createFood() { 
+    food = {x: Math.floor(Math.random() * 19), y: Math.floor(Math.random() * 19)};
+    if (snake.some(p => p.x === food.x && p.y === food.y)) createFood();
+}
 function drawFood() { ctx.fillStyle = "#f43f5e"; ctx.beginPath(); ctx.arc(food.x*20+10, food.y*20+10, 8, 0, Math.PI*2); ctx.fill(); }
-function didGameEnd() {
-    const head = snake[0];
-    const hitWall = head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20;
-    let hitSelf = false;
-    for(let i = 4; i < snake.length; i++) { if(snake[i].x === head.x && snake[i].y === head.y) hitSelf = true; }
-    return hitWall || hitSelf;
-}
+
 window.onkeydown = e => {
+    if (gamePaused) return;
     if (e.keyCode === 37 && dx !== 1) { dx = -1; dy = 0; }
     if (e.keyCode === 38 && dy !== 1) { dx = 0; dy = -1; }
     if (e.keyCode === 39 && dx !== -1) { dx = 1; dy = 0; }
     if (e.keyCode === 40 && dy !== -1) { dx = 0; dy = 1; }
 };
-// Touch Support for iPhone/iPad
+
 let touchStartX = 0; let touchStartY = 0;
-canvas.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, false);
-canvas.addEventListener('touchmove', e => {
-    if(!touchStartX || !touchStartY) return;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, false);
+document.addEventListener('touchmove', e => {
+    if(!touchStartX || !touchStartY || gamePaused) return;
     let dxT = e.touches[0].clientX - touchStartX; let dyT = e.touches[0].clientY - touchStartY;
-    if (Math.abs(dxT) > Math.abs(dyT)) { if(dxT > 0 && dx !== -1) {dx=1; dy=0;} else if(dxT < 0 && dx !== 1) {dx=-1; dy=0;} }
-    else { if(dyT > 0 && dy !== -1) {dx=0; dy=1;} else if(dyT < 0 && dy !== 1) {dx=0; dy=-1;} }
+    if (Math.abs(dxT) > Math.abs(dyT)) { 
+        if(dxT > 0 && dx !== -1) {dx=1; dy=0;} 
+        else if(dxT < 0 && dx !== 1) {dx=-1; dy=0;} 
+    } else { 
+        if(dyT > 0 && dy !== -1) {dx=0; dy=1;} 
+        else if(dyT < 0 && dy !== 1) {dx=0; dy=-1;} 
+    }
     touchStartX = 0; touchStartY = 0;
 }, false);
 
